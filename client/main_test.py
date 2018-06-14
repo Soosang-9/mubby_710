@@ -15,7 +15,7 @@ PORT = 7100
 ADDR = (HOST, PORT)
 BUFF_SIZE = 1024
 
-### send pcm streaming ###
+### recording, send pcm data ###
 audio = pyaudio.PyAudio()
 stream = audio.open(format=FORMAT,
                     channels=CHANNELS,
@@ -28,7 +28,7 @@ clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 clientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 clientSocket.connect(ADDR)
 
-start_time = time.time()
+start_rec = time.time()
 data = 'rec'
 clientSocket.send(data.encode())
 
@@ -44,18 +44,19 @@ clientSocket.send(data.encode())
 stream.stop_stream()
 stream.close()
 audio.terminate()
-rec_time = time.time() - start_time
+rec_time = time.time() - start_rec
 
 ### receive pcm streaming ###
 data = clientSocket.recv(BUFF_SIZE)
+start_pcm_recv = time.time()
 if data == b'tts':
     a = 0
     while True:
         data = clientSocket.recv(BUFF_SIZE)
         a += len(data)
-        print(len(data))
+        # print(data)
         FORMAT2 = pyaudio.paInt16
-        CHUNK2 = 128
+        CHUNK2 = 8129
         CHANNELS2 = 1
         RATE2 = 16000
         audio2 = pyaudio.PyAudio()
@@ -67,14 +68,17 @@ if data == b'tts':
                             frames_per_buffer=CHUNK2)
         stream2.write(data, CHUNK2)
         if data[-3:] == b'end':
-            print(data[-3:])
             stream2.write(data[-3:], CHUNK2)
-            stream.stop_stream()
-            stream.close()
+            stream2.stop_stream()
+            stream2.close()
             break
-    print(a)
+    print("pcm data length >>", a-len(data[-3:]))
+pcm_recv_time = time.time() - start_pcm_recv
 
-print("1. Recording time         >>", rec_time)
+full_time = time.time() - start_rec
+
+print("1. Recording time >>", rec_time)
+print("2. Waiting        >>", full_time-(rec_time+pcm_recv_time))
+print("3. pcm streaming  >>", pcm_recv_time)
 
 clientSocket.close()
-

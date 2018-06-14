@@ -25,7 +25,7 @@ serverSocket.bind(ADDR)
 serverSocket.listen(5)
 
 def client_thread(sock):
-    ### receive streaming pcm ###
+    ### receive pcm data ###
     start_pcm_recv = time.time()
     data = clientSocket.recv(BUFF_SIZE)
     if data == b'rec':
@@ -58,7 +58,7 @@ def client_thread(sock):
     answer = aibril_conn.aibril_conv(text)
     conv_time = time.time() - start_conv
 
-    #### aws-polly tts && streaming pcm ###
+    #### aws-polly tts && sending pcm data ###
     data = 'tts'
     clientSocket.send(data.encode())
     start_pcm_send = time.time()
@@ -71,8 +71,8 @@ def client_thread(sock):
                                        VoiceId="Seoyeon")
     stream = response.get("AudioStream")
     data = stream.read()
+    print("pcm data length >>", len(data))
     clientSocket.sendall(data)
-    print("Success Polly PCM Streaming")
 
     data = 'end'
     clientSocket.send(data.encode())
@@ -91,4 +91,3 @@ if __name__ == '__main__':
         print("Connected from", addr)
 
         start_new_thread(client_thread, (clientSocket, ))
-

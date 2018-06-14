@@ -15,7 +15,7 @@ PORT = 7100
 ADDR = (HOST, PORT)
 BUFF_SIZE = 1024
 
-### send pcm streaming ###
+### send pcm data ###
 audio = pyaudio.PyAudio()
 stream = audio.open(format=FORMAT,
                     channels=CHANNELS,
@@ -46,13 +46,11 @@ stream.close()
 audio.terminate()
 rec_time = time.time() - start_rec
 
-### receive pcm streaming ###
-def pcm2wav(path):
-    os.system(('ffmpeg -f s16le -ar 16000 -ac 1 -i {} -ar 44100 -ac 2 {}.wav -y').format(path, path))
+### receive pcm data ###
 data = clientSocket.recv(BUFF_SIZE)
 start_pcm_recv = time.time()
 if data == b'tts':
-    f = open('polly_tts', 'ab')
+    f = open('polly_tts.raw', 'ab')
     while True:
         data = clientSocket.recv(BUFF_SIZE)
         if data[-3:] == b'end':
@@ -62,24 +60,28 @@ if data == b'tts':
         f.write(data)
 pcm_recv_time = time.time() - start_pcm_recv
 
-### pcm player ###
-# os.system('ffplay -autoexit -f s16le -ar 16000 -ac 1 polly_tts')
-
-### pcm to wav ###
-start_pcm2wav = time.time()
-pcm2wav('polly_tts')
-os.unlink('polly_tts')
-pcm2wav_time = time.time() - start_pcm2wav
-
 full_time = time.time() - start_rec
 
-### wav player ###
-os.system('aplay polly_tts.wav')
+### pcm player ###
+os.system('play -r 16000 -e signed-integer -b 16 polly_tts.raw')
+os.unlink('polly_tts.raw')
+
+# ### pcm to wav ###
+# start_pcm2wav = time.time()
+# def pcm2wav(path):
+#     os.system(('ffmpeg -f s16le -ar 16000 -ac 1 -i {} -ar 44100 -ac 2 {}.wav -y').format(path, path))
+# pcm2wav('polly_tts')
+# os.unlink('polly_tts')
+# pcm2wav_time = time.time() - start_pcm2wav
+#
+# full_time = time.time() - start_rec
+#
+# ### wav player ###
+# os.system('aplay polly_tts.wav')
 
 print("1. Recording time         >>", rec_time)
-print("2. Waiting                >>", full_time-(rec_time+pcm_recv_time+pcm2wav_time))
+print("2. Waiting                >>", full_time-(rec_time+pcm_recv_time))
 print("3. Received pcm data(tts) >>", pcm_recv_time)
-print("4. pcm to wav             >>", pcm2wav_time)
+# print("4. pcm to wav             >>", pcm2wav_time)
 
 clientSocket.close()
-
