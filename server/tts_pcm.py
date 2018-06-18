@@ -8,6 +8,21 @@ from boto3 import client
 def pcm2wav(path):
     os.system(('ffmpeg -f s16le -ar 16000 -ac 1 -i {} -ar 44100 -ac 2 {}.wav -y').format(path, path))
 
+start_mp3_time = time.time()
+polly = client("polly", region_name="ap-northeast-2")
+response = polly.synthesize_speech(
+    Text="안녕하세요",
+    OutputFormat="mp3",
+    VoiceId="Seoyeon")
+stream = response.get("AudioStream")
+
+with open('polly_tts.mp3', 'wb') as f:
+    data = stream.read()
+    f.write(data)
+mp3_time = time.time() - start_mp3_time
+mp3_data_len = len(data)
+
+start_pcm_time = time.time()
 polly = client("polly", region_name="ap-northeast-2")
 response = polly.synthesize_speech(
     Text="안녕하세요",
@@ -18,8 +33,12 @@ stream = response.get("AudioStream")
 
 with open('polly_tts.raw', 'wb') as f:
     data = stream.read()
-    print(data)
     f.write(data)
+pcm_time = time.time() - start_pcm_time
+pcm_data_len = len(data)
+
+print("return mp3 time >>", mp3_time)
+print("return pcm time >>", pcm_time)
 
 # pcm2wav('polly_tts')
 

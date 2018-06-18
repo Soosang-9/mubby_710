@@ -56,9 +56,9 @@ if data == b'tts':
         a += len(data)
         # print(data)
         FORMAT2 = pyaudio.paInt16
-        CHUNK2 = 8129
+        CHUNK2 = 512
         CHANNELS2 = 1
-        RATE2 = 16000
+        RATE2 = 8000
         audio2 = pyaudio.PyAudio()
         stream2 = audio2.open(format=FORMAT2,
                             channels=CHANNELS2,

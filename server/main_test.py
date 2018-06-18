@@ -6,10 +6,10 @@ import time
 
 from _thread import start_new_thread
 from ffmpy import FFmpeg
-from utils import speech_to_text    # Google STT
-from utils import aibril_connector  # Aibril Conversation
 from boto3 import client            # AWS-Polly TTS
 
+from server.utils import speech_to_text    # Google STT
+from server.utils import aibril_connector  # Aibril Conversation
 
 HOST = ''
 PORT = 7100
@@ -66,7 +66,7 @@ def client_thread(sock):
     polly = client("polly",
                    region_name="ap-northeast-2")
     response = polly.synthesize_speech(Text=answer,
-                                       SampleRate="16000",
+                                       SampleRate="8000",
                                        OutputFormat="pcm",
                                        VoiceId="Seoyeon")
     stream = response.get("AudioStream")

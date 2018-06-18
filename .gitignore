@@ -4,3 +4,9 @@
 server/env/
 
 server/polly_tts\.raw
+
+server/polly_tts\.mp3
+
+server/test\.mp3
+
+server/test\.py
