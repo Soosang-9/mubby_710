@@ -1,5 +1,3 @@
-# sudo apt-get install ffmpeg
-# sudo apt-get install sox
 SpeechRecognition==3.8.1
 watson-developer-cloud==0.26.1
 boto3

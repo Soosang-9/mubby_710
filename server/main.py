@@ -4,11 +4,11 @@ import socket
 import os
 import time
 
+from server.utils import speech_to_text     # Google STT
+from server.utils import aibril_connector   # Aibril Conversation
+from boto3 import client                    # AWS-Polly TTS
 from _thread import start_new_thread
 from ffmpy import FFmpeg
-from utils import speech_to_text    # Google STT
-from utils import aibril_connector  # Aibril Conversation
-from boto3 import client            # AWS-Polly TTS
 
 
 HOST = ''
