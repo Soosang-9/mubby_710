@@ -2,7 +2,7 @@
 ARTIK710과의 음성스트리밍 처리 및 인공지능 대화 테스트.
 
 
-## [Cient](https://github.com/Soosang-9/mubby_710/tree/master/client)
+## [Client](https://github.com/Soosang-9/mubby_710/tree/master/client)
 - ARTIK710
 
 #### Dependencies
@@ -21,3 +21,9 @@ ARTIK710과의 음성스트리밍 처리 및 인공지능 대화 테스트.
 - sudo apt-get install ffmpeg libav-tools
 - pip install -r requirements.txt
 ```
+
+
+### 구간별 시간 측정결과
+<div align='center'>
+  <img src='/img/result.png' width='800px'>
+</div>
