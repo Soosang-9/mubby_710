@@ -5,7 +5,7 @@ ARTIK710과의 음성스트리밍 처리 및 인공지능 대화 테스트.
 ## [Client](https://github.com/Soosang-9/mubby_710/tree/master/client)
 - ARTIK710
 
-#### Dependencies
+Install Dependencies
 ```bash
 - sudo apt-get install sox
 - pip install -r requirements.txt
@@ -16,7 +16,7 @@ ARTIK710과의 음성스트리밍 처리 및 인공지능 대화 테스트.
 - Ubuntu16.04
 - Python3.5
 
-#### Dependencies
+Install Dependencies
 ```bash
 - sudo apt-get install ffmpeg libav-tools
 - pip install -r requirements.txt
