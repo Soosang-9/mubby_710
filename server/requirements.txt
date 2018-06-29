@@ -1,4 +1,5 @@
 SpeechRecognition==3.8.1
+google-cloud-speech==0.33.0
 watson-developer-cloud==0.26.1
 boto3
 awscli
