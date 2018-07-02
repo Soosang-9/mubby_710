@@ -14,7 +14,7 @@ from google.cloud.speech import types
 class Artik(object):
     def __init__(self):
         self.HOST = ''
-        self.PORT = 7103
+        self.PORT = 7100
         self.BUFF = 1024
         self.ADDR = (self.HOST, self.PORT)
 
@@ -35,7 +35,7 @@ class Artik(object):
                     yield data[:-3]
                     break
                 yield data
-            self.clientSocket.close()
+        self.clientSocket.close()
 
 
 def listen_print_loop(responses):
@@ -63,19 +63,30 @@ def listen_print_loop(responses):
             num_chars_printed = 0
 
 
-def main():
+def main(audio_generator):
     client = speech.SpeechClient()
     config = types.RecognitionConfig(encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
                                      sample_rate_hertz=16000,
                                      language_code='ko-KR')
     streaming_config = types.StreamingRecognitionConfig(config=config,
                                                         interim_results=True)
-    artik = Artik().generator()
     requests = (types.StreamingRecognizeRequest(audio_content=content)
-                for content in artik)
+                for content in audio_generator)
     responses = client.streaming_recognize(streaming_config, requests)
     listen_print_loop(responses)
 
 
 if __name__ == '__main__':
-    main()
+    while True:
+        print('')
+        print('Waiting for Connection...')
+        try:
+            artik = Artik().generator()
+            main(audio_generator=artik)
+        except Exception as e:
+            print('[Error]', e)
+            if e[:3] == 400:
+                artik = Artik().generator()
+                main(audio_generator=artik)
+            else:
+                sys.exit()
